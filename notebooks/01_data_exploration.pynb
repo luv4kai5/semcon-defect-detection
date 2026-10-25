@@ -1,0 +1,59 @@
+# %% Cell 1: Load dataset
+from ucimlrepo import fetch_ucirepo
+import pandas as pd
+
+print("Starting dataset download...", flush=True)
+# Download the SECOM dataset
+semcon = fetch_ucirepo(id=179)
+print("Dataset downloaded successfully!", flush=True)
+
+# %% Cell 2: Rest of the cel
+
+# print(semcon.data)
+
+# access the complete original dataset
+data=semcon.data.original.copy()
+
+
+
+Y=data["class"].copy()
+#.copy()creates an independent copy, so that whatever changes we do, does not reflect in  ouur original semcon data
+X=data.drop(columns=["class","timestamp"]).copy()
+
+# display a few rows
+# print("\nFirst five rows=")
+# print(X.head())
+
+# Display the datset dimensions
+print("Feature matrix shape=",X.shape)
+print(",Target shape=",Y.shape)
+
+# No of pass and fails
+print("\nTarget class counts=")
+print(Y.value_counts(dropna=False))
+
+# Total missing cells
+print("\nTotal missing values=",X.isna().sum().sum())
+
+# Feature wise misingness
+print("\nFeautures with the most missing values=")
+print(X.isna().sum().sort_values(ascending=False).head(10))
+
+#Row wise missingness
+print("\nTop 10 rows with most missing values(Row wise-missingness)=")
+print(X.isna().sum(axis=1).sort_values(ascending=False).head(10))
+
+print("\nNo of rows with more than 100 missing values=")
+print((X.isna().sum(axis=1)>100).sum())
+
+print("\nNo of rows with more than 100, have which classes")
+row_missing=X.isna().sum(axis=1)
+print(Y.loc[row_missing>100])
+
+print("\n",row_missing.describe())
+
+
+
+
+
+# %%
